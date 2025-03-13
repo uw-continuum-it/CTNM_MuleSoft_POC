@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:batch="http://www.mulesoft.org/schema/mule/batch"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+	<salesforce:sfdc-config name="Salesforce_QA" doc:name="Salesforce Config" doc:id="4650d8f8-e45a-4a26-b28e-99c65826c7ec" sendNullValues="true">
+		<salesforce:oauth-user-pass-connection consumerKey="3MVG9ayzKZt5EleEJhQXwC2coXVQ_UmAFvy2G5bqG0BQLCEHrFOpidohF1eRperWo88NlR92o4lazZjEUf4EK" consumerSecret="257676C30C0376E9761E20D37F14111332F2A087348DFF1F051CCBFE9C135891" username="ctnmcrm@uw.edu.qa" password="WashingtonUWC2020QA#" tokenEndpoint="https://test.salesforce.com/services/oauth2/token" />
+	</salesforce:sfdc-config>
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="942b2072-46b8-4960-836c-8e5557b9bb8f">
+		<http:listener-connection host="localhost" port="8081" />
+	</http:listener-config>
+	<db:config name="AzureCRMDev" doc:name="Database Config" doc:id="393104f6-a973-4880-ab9d-e6dd7a9aa491" >
+		<db:mssql-connection host="a1vj8ajow0.database.windows.net" user="pceuwedu" password="gakj*(5kj238098*)(0982530820j0920909)()(23jgakjkjladfkljagkKJJK)#@$%" databaseName="UWC2__CRM_DEV" />
+	</db:config>
+	<db:config name="DataMart" doc:name="Database Config" doc:id="379b2cd6-4942-4cd5-9457-d4912da5a234" >
+		<db:mssql-connection host="datamart2019.extn.washington.edu\datamart" user="jitterbit" password="wr9qa4L5lva#h5MuZ+cr" databaseName="uweo_dev" useXaTransactions="true"/>
+	</db:config>
+	<flow name="UpsertApplicationsFlow" doc:id="9a2e82d8-6405-474a-a2e5-1c0b0a25ae4c" tracking:enable-default-events="true">
+		<http:listener doc:name="testHttpListener" doc:id="69649b27-5d9d-4524-a1de-946ba5ffc53a" config-ref="HTTP_Listener_config" path="testListener" />
+		<set-variable value="1" doc:name="Set Variable" doc:id="210adae5-3319-42af-8701-7678f9ee4d63" variableName="daysToExtract"/>
+		<db:execute-ddl doc:name="Execute DDL" doc:id="62efbf66-9e2e-4dba-abd3-123146b5a466" config-ref="DataMart">
+			<db:sql ><![CDATA[DECLARE @daysToExtract int = 1
+DECLARE @fromDt datetime
+DECLARE @mergedPersIds TABLE (obsoletePersId int not null, survivePersId int not null)
+DECLARE @updDt date = DATEFROMPARTS(DATEPART(year,GETDATE()) - 4, 01, 01)
+
+INSERT INTO @mergedPersIds 
+SELECT
+m.obsoletePersId
+,m.survivePersId 
+FROM  
+persMerge m INNER JOIN xferStudentProgramApplicationIn app on app.actualPersId = m.obsoletePersId
+
+ 
+
+--If @daysToExtract is 0, get all data
+IF(NULLIF(@daysToExtract, 0) IS NOT NULL)
+BEGIN
+    SELECT @fromDt = DATEADD(day, 0, DATEDIFF(day, 0, getdate()) - @daysToExtract);
+END;
+
+ 
+ SELECT * INTO ##jdMuleSoftTest FROM 
+ (
+	SELECT 
+		   spst.stdtPersId       AS persId,
+		   spst.programId,
+		   spst.stdtPgmStatus,
+		   spst.updDt            AS statusUpdDt,
+		   sps.toTermCd,
+		   pr.pgmMasterId,
+		   pm.pgmMasterType,
+		   pr.inCatalog,
+		   pr.externalAppSrc,
+		   app.sfApplicationId,
+		   app.sfApplicantId,
+		   app.addDt AS studentAppAddDt,
+		   m.obsoletePersId,
+		   m.survivePersId,		   
+		   ROW_NUMBER() OVER (PARTITION BY spst.stdtPersId, spst.programId ORDER BY spst.UpdDt DESC) as rownum
+	  FROM studentProgramStatusTrail spst
+	  JOIN studentProgramStatus sps
+		ON sps.stdtPersId = spst.stdtPersId
+	   AND sps.programId = spst.programId
+	  JOIN program pr on pr.programId = spst.programId --AND pr.inCatalog = 1
+	  JOIN (SELECT pgmMasterId, pgmMasterType FROM programMaster GROUP BY pgmMasterId, pgmMasterType) pm on pr.pgmMasterId = pm.pgmMasterId
+	  LEFT JOIN xferStudentProgramApplicationIn app 
+	ON (
+		sps.stdtPersId = --app.actualPersId
+			CASE 
+				WHEN EXISTS (SELECT survivePersId FROM @mergedPersIds WHERE obsoletePersId = app.actualPersId GROUP BY survivePersId)
+				THEN (SELECT survivePersId FROM @mergedPersIds WHERE obsoletePersId = app.actualPersId GROUP BY survivePersId)
+				ELSE app.actualPersId
+			END  
+		AND sps.programId = app.pgmCrsId
+		AND app.actualPersId IS NOT NULL
+		)
+		LEFT JOIN @mergedPersIds m ON m.obsoletePersId = app.actualPersId
+	 WHERE (@fromDt IS NULL 
+		OR (@fromDt IS NOT NULL AND spst.updDt > @fromDt)
+		)
+		AND spst.stdtPgmStatus not in ('SC','USC')
+		AND spst.updDt >= @updDt		
+	) r
+	WHERE (r.inCatalog = 1 OR pgmMasterType <> 'CERT')
+	AND NOT (
+		ISNULL(r.externalAppSrc,'') = 'SALESFORCE'
+		AND r.stdtPgmStatus IN ('COND','WAIT','APPL','INCOMP')
+		)
+	ORDER BY r.persId, r.programId, r.statusUpdDt asc
+]]></db:sql>
+		</db:execute-ddl>
+		<db:select doc:name="Dev Warehouse Applications" doc:id="4d3e4446-78aa-4121-ac74-5984e9f5a531" config-ref="DataMart" fetchSize="200">
+			<db:sql ><![CDATA[SELECT * FROM ##jdMuleSoftTest]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'daysToExtract': vars.daysToExtract}]]]></db:input-parameters>
+		</db:select>
+		<batch:job jobName="UpsertApplications_BatchJob" doc:id="88aae173-5219-462c-8c8d-c4d08a5c3c9a" blockSize="200">
+			<batch:process-records >
+				<batch:step name="Batch_Step" doc:id="76dfde25-01af-4964-9a14-67bddc26ac86" >
+					<ee:transform doc:name="Transform Message" doc:id="73d61ea4-95a6-45cf-b21e-2ee5a93e29c4">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+var upsertKey = 
+	payload.sfApplicationId default payload.persId ++ "_" ++ payload.programId
+var decisionArrayList = ["ACPT","DENY","COND","PROV","WAIT","TIN"]
+output application/java
+---
+{
+	hed__Application_Date__c: if ( payload.stdtPgmStatus == "APPL" ) payload.statusUpdDt
+			else if ( payload.externalAppSrc == "SALESFORCE" ) null
+			else null,
+	hed__Application_Decision_Date__c: 
+		if (decisionArrayList contains payload.stdtPgmStatus) payload.statusUpdDt
+		else null,
+	hed__Application_Status__c: payload.stdtPgmStatus match {
+		case str if payload.stdtPgmStatus == "ACPT" -> "Admit"
+		case str if payload.stdtPgmStatus == "APPL" -> "Submitted"
+		case str if payload.stdtPgmStatus == "DECL" -> "Declined Offer"
+		case str if payload.stdtPgmStatus == "DEFR" -> "Deferred Offer"
+		case str if payload.stdtPgmStatus == "INCOMP" -> "Incomplete"
+		case str if payload.stdtPgmStatus == "WAIT" -> "Waitlist"
+		case str if payload.stdtPgmStatus == "OFFER" -> "Admit"
+		else -> payload.stdtPgmStatus
+	},
+	hed__Applying_To__r : {
+		Program_Master_EOS_ID__c : payload.pgmMasterId as String
+		},
+	EOS_Upsert_Key__c: upsertKey,
+	Program_Plan__r : {
+		Program_Offering_EOS_ID__c: payload.programId as Number
+		},
+	hed__Applicant__r : {
+		EOS_ID__C : payload.persId as Number
+		}
+}
+
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+					<batch:aggregator doc:name="Batch Aggregator" doc:id="26112c20-2d02-4d2a-8c09-dcfebbff814a" size="200">
+						<salesforce:upsert objectType="hed__Application__c" externalIdFieldName="EOS_Upsert_Key__c" doc:name="Upsert" doc:id="6c17a53d-9af9-4168-aa45-7e4ed3905ac1" config-ref="Salesforce_QA">
+						</salesforce:upsert>
+					</batch:aggregator>
+				</batch:step>
+			</batch:process-records>
+		</batch:job>
+	</flow>
+</mule>

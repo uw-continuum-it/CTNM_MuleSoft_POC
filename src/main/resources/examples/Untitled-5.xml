@@ -1,0 +1,243 @@
+<xsd:schema targetNamespace="urn:schemas-microsoft-com:sql:SqlRowSet1"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:sqltypes="http://schemas.microsoft.com/sqlserver/2004/sqltypes" elementFormDefault="qualified">
+    <xsd:import namespace="http://schemas.microsoft.com/sqlserver/2004/sqltypes" schemaLocation="http://schemas.microsoft.com/sqlserver/2004/sqltypes/sqltypes.xsd" />
+    <xsd:element name="row">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="persId" type="sqltypes:int" />
+                <xsd:element name="lastName">
+                    <xsd:simpleType>
+                        <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth" sqltypes:sqlSortId="52">
+                            <xsd:maxLength value="25" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="firstName" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth" sqltypes:sqlSortId="52">
+                            <xsd:maxLength value="20" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="preferredFirstName" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth" sqltypes:sqlSortId="52">
+                            <xsd:maxLength value="20" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="middleName" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth" sqltypes:sqlSortId="52">
+                            <xsd:maxLength value="15" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="namePrefix" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth" sqltypes:sqlSortId="52">
+                            <xsd:maxLength value="50" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="nameSuffix" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth" sqltypes:sqlSortId="52">
+                            <xsd:maxLength value="50" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="nameDegreeSuffix" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth" sqltypes:sqlSortId="52">
+                            <xsd:maxLength value="50" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="addrStatus" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth" sqltypes:sqlSortId="52">
+                            <xsd:maxLength value="50" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="addrLine1" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth" sqltypes:sqlSortId="52">
+                            <xsd:maxLength value="40" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="addrLine2" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth" sqltypes:sqlSortId="52">
+                            <xsd:maxLength value="40" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="addrCity" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth" sqltypes:sqlSortId="52">
+                            <xsd:maxLength value="30" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="addrState" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth" sqltypes:sqlSortId="52">
+                            <xsd:maxLength value="10" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="addrZip" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth" sqltypes:sqlSortId="52">
+                            <xsd:maxLength value="15" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="addrCountry" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth" sqltypes:sqlSortId="52">
+                            <xsd:maxLength value="50" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="homePhoneStatus" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth" sqltypes:sqlSortId="52">
+                            <xsd:maxLength value="50" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="homePhoneNo" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth" sqltypes:sqlSortId="52">
+                            <xsd:maxLength value="20" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="workPhoneStatus" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth" sqltypes:sqlSortId="52">
+                            <xsd:maxLength value="50" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="workPhoneNo" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth" sqltypes:sqlSortId="52">
+                            <xsd:maxLength value="20" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="faxPhoneStatus" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth" sqltypes:sqlSortId="52">
+                            <xsd:maxLength value="50" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="faxPhoneNo" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth" sqltypes:sqlSortId="52">
+                            <xsd:maxLength value="20" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="emailStatus" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth" sqltypes:sqlSortId="52">
+                            <xsd:maxLength value="50" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="emailAddr" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth" sqltypes:sqlSortId="52">
+                            <xsd:maxLength value="60" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="uwEmailAddr" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth" sqltypes:sqlSortId="52">
+                            <xsd:maxLength value="60" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="companyName" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth" sqltypes:sqlSortId="52">
+                            <xsd:maxLength value="50" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="companyJob" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth" sqltypes:sqlSortId="52">
+                            <xsd:maxLength value="50" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="birthDt" type="sqltypes:datetime" minOccurs="0" />
+                <xsd:element name="gender">
+                    <xsd:simpleType>
+                        <xsd:restriction base="sqltypes:char" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth" sqltypes:sqlSortId="52">
+                            <xsd:maxLength value="1" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="UWstudentNo" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth" sqltypes:sqlSortId="52">
+                            <xsd:maxLength value="25" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="UWNetID" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth" sqltypes:sqlSortId="52">
+                            <xsd:maxLength value="25" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="persAddedByName" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth" sqltypes:sqlSortId="52">
+                            <xsd:maxLength value="46" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="persAddedDate" type="sqltypes:datetime" />
+                <xsd:element name="persUpdDt" type="sqltypes:datetime" />
+                <xsd:element name="persContactUpdDt" type="sqltypes:datetime" minOccurs="0" />
+                <xsd:element name="addressUpdDt" type="sqltypes:datetime" minOccurs="0" />
+                <xsd:element name="homePhoneUpdDt" type="sqltypes:datetime" minOccurs="0" />
+                <xsd:element name="workPhoneUpdDt" type="sqltypes:datetime" minOccurs="0" />
+                <xsd:element name="faxPhoneUpdDt" type="sqltypes:datetime" minOccurs="0" />
+                <xsd:element name="emailUpdDt" type="sqltypes:datetime" minOccurs="0" />
+                <xsd:element name="uwEmailUpdDt" type="sqltypes:datetime" minOccurs="0" />
+                <xsd:element name="primaryEmailType" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth" sqltypes:sqlSortId="52">
+                            <xsd:maxLength value="10" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="hasHold" type="sqltypes:int" />
+                <xsd:element name="PAC" minOccurs="0">
+                    <xsd:simpleType>
+                        <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1033" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth" sqltypes:sqlSortId="52">
+                            <xsd:maxLength value="6" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="PACltrPrintDt" type="sqltypes:datetime" minOccurs="0" />
+                <xsd:element name="mergeLossPersId" type="sqltypes:int" minOccurs="0" />
+                <xsd:element name="mergeWinPersId" type="sqltypes:int" minOccurs="0" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>

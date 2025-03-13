@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="EOS_Application" format="java">
+      <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
+type: object
+properties:
+    persId:
+        type: integer
+    programId:
+        type: integer
+    stdtPgmStatus: 
+        type: string
+    statusUpdDt: 
+        type: datetime
+    toTermCd:
+        type: string
+    pgmMasterId:
+        type: integer
+    externalAppSrc:
+        type: string
+    sfApplicationId:
+        type: string]]></types:shape>
+    </types:type>
+    <types:type name="EOS_person" format="java">
+      <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
+type: object
+properties:
+    Contact_Email__c:
+        type: string
+    EOS_ID__c:
+        type: integer
+    FirstName:
+        type: string
+    Has_Hold__c:
+        type: boolean
+    HomePhone:
+        type: string
+    LastName:
+        type: string
+    MailingCity:
+        type: string
+    MailingCountry:
+        type: string
+    MailingPostalCode:
+        type: string
+    MailingState:
+        type: string
+    MiddleName:
+        type: string
+    NetID__c:
+        type: string    
+    SIS_Preferred_Email__c:
+        type: string
+    Salutation:
+        type: string
+    hed__Gender__c:
+        type: string
+    hed__Preferred_Email__c:
+        type: string
+    hed__University_Email__c:
+        type: string
+    hed__WorkPhone__c:
+        type: string
+    mergeLossPersId:
+      type: integer
+    mergeWinPersId:
+      type: integer]]></types:shape>
+    </types:type>
+    <types:type name="EOS_person1" format="xml">
+      <types:example format="xml" element="{http://www.w3.org/2001/XMLSchema}schema" location="examples/Untitled-5.xml"/>
+    </types:type>
+    <types:type name="test" format="java">
+      <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
+type: string]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#520b9948-219d-4025-b6a9-6bba13c589f2"/>
+  <types:enrichment select="#3aafb5aa-b040-41c0-96e5-3e2a2a6e18a3"/>
+</types:mule>
