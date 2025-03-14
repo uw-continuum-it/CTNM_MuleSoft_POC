@@ -199,4 +199,5 @@ payload map
 			</batch:process-records>
 		</batch:job>
 	</flow>
+	<error-handler name="UWC2_ETL_POCError_Handler" doc:id="e591fd20-39d9-401a-835a-e75933e1b6be" />
 </mule>
