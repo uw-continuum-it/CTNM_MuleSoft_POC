@@ -29,7 +29,7 @@ http://www.mulesoft.org/schema/mule/microsoftTeams http://www.mulesoft.org/schem
 	<http:listener-config name="SF_OAuth_HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="9a3b0a87-ec5f-4caa-b10f-b4e469a45f6d" >
 		<http:listener-connection host="localhost" port="8082" />
 	</http:listener-config>
-	<salesforce:sfdc-config name="Salesforce_Config_Basic_Auth" doc:name="Salesforce Config" doc:id="f47a0743-9fbb-4be1-b69f-29073f891754" >
+	<salesforce:sfdc-config name="Salesforce_Config_Basic_Auth" doc:name="Salesforce Config" doc:id="f47a0743-9fbb-4be1-b69f-29073f891754" sendNullValues="true">
 		<salesforce:oauth-user-pass-connection username="jdud@uwc2.prod.qa" tokenEndpoint="https://test.salesforce.com/services/oauth2/token" password="G0cards!" consumerKey="3MVG9Bd71Ohl9lnNqIil7K7YFkrr_W9sdZ2rD1qBUvK4edwn_NuFCxi8cAGk6oVfQnFZN.ck5.2Q600MKE8m_" consumerSecret="7AC88C0571E467F2B06FB809592E0118C5DF06BA2D5131EE5B89883247E06E5F"/>
 	</salesforce:sfdc-config>
 	<email:smtp-config name="Email_SMTP" doc:name="Email SMTP" doc:id="33085fba-5d85-4fef-9cdb-43675f7a3d36" >
@@ -60,7 +60,7 @@ WHERE DATEDIFF(day, addDt, @today) <= @updateInterval
 
 DROP TABLE IF EXISTS [salesforce].dbo.RSTE_2233;
 
-SELECT DISTINCT TOP 50
+SELECT DISTINCT --TOP 50
      p.persId                            AS persId,
     p.lastName                            AS lastName,     
     p.firstName                            AS firstName, 
@@ -111,8 +111,11 @@ SELECT DISTINCT TOP 50
 	END AS hasHold,
 	s.PAC,
 	s.PACltrPrintDt,
-    ISNULL(CAST(pm1.obsoletePersId as varchar),'') as mergeLossPersId,
-    ISNULL(CAST(pm2.survivePersId as varchar),'') as mergeWinPersId
+    --ISNULL(CAST(pm1.obsoletePersId as varchar),'') as mergeLossPersId,
+    --ISNULL(CAST(pm2.survivePersId as varchar),'') as mergeWinPersId,
+    CAST(pm1.obsoletePersId as varchar) as mergeLossPersId,
+    CAST(pm2.survivePersId as varchar) as mergeWinPersId,
+    p.persStatus
 INTO [salesforce].dbo.RSTE_2233
 FROM person p
 LEFT JOIN @tblPersonIDs IDs
@@ -154,14 +157,14 @@ LEFT OUTER JOIN person p2    ON p2.persId = p.addBy
 LEFT OUTER JOIN student s	ON s.persId = p.persId 
 LEFT OUTER JOIN persIdentifier pi1 ON (pi1.persId = p.persId and pi1.domain = 'UWSTDT') 
 LEFT OUTER JOIN persIdentifier pi2 ON (pi2.persId = p.persId and pi2.domain = 'UWNETID')
-LEFT OUTER JOIN persMerge pm1 ON p.persId = pm1.survivePersId 
-LEFT OUTER JOIN persMerge pm2 ON p.persId = pm2.obsoletePersId 
+LEFT OUTER JOIN persMerge pm1 ON p.persId = pm1.survivePersId and pm1.mergeStatus = 'C'
+LEFT OUTER JOIN persMerge pm2 ON p.persId = pm2.obsoletePersId and pm2.mergeStatus = 'C'
                             
 WHERE ISNULL(CAST(pm1.obsoletePersId as varchar),'') != ''
    OR ISNULL(CAST(pm2.survivePersId as varchar),'') != '']]></db:sql>
 		</db:execute-ddl>
 		<db:select doc:name="Select Contacts for SF Update" doc:id="520b9948-219d-4025-b6a9-6bba13c589f2" config-ref="DataMart">
-			<db:sql ><![CDATA[SELECT [persId] ,[lastName] ,[firstName] ,[preferredFirstName] ,[middleName] ,[namePrefix] ,[nameSuffix] ,[nameDegreeSuffix] ,[addrStatus] ,[addrLine1] ,[addrLine2] ,[addrCity] ,[addrState] ,[addrZip] ,[addrCountry] ,[homePhoneStatus] ,[homePhoneNo] ,[workPhoneStatus] ,[workPhoneNo] ,[faxPhoneStatus] ,[faxPhoneNo] ,[emailStatus] ,[emailAddr] ,[uwEmailAddr] ,[companyName] ,[companyJob] ,[birthDt] ,[gender] ,[UWstudentNo] ,[UWNetID] ,[persAddedByName] ,[persAddedDate] ,[persUpdDt] ,[persContactUpdDt] ,[addressUpdDt] ,[homePhoneUpdDt] ,[workPhoneUpdDt] ,[faxPhoneUpdDt] ,[emailUpdDt] ,[uwEmailUpdDt] ,[primaryEmailType] ,[hasHold] ,[PAC] ,[PACltrPrintDt] ,[mergeLossPersId] ,[mergeWinPersId]
+			<db:sql ><![CDATA[SELECT [persId] ,[lastName] ,[firstName] ,[preferredFirstName] ,[middleName] ,[namePrefix] ,[nameSuffix] ,[nameDegreeSuffix] ,[addrStatus] ,[addrLine1] ,[addrLine2] ,[addrCity] ,[addrState] ,[addrZip] ,[addrCountry] ,[homePhoneStatus] ,[homePhoneNo] ,[workPhoneStatus] ,[workPhoneNo] ,[faxPhoneStatus] ,[faxPhoneNo] ,[emailStatus] ,[emailAddr] ,[uwEmailAddr] ,[companyName] ,[companyJob] ,[birthDt] ,[gender] ,[UWstudentNo] ,[UWNetID] ,[persAddedByName] ,[persAddedDate] ,[persUpdDt] ,[persContactUpdDt] ,[addressUpdDt] ,[homePhoneUpdDt] ,[workPhoneUpdDt] ,[faxPhoneUpdDt] ,[emailUpdDt] ,[uwEmailUpdDt] ,[primaryEmailType] ,[hasHold] ,[PAC] ,[PACltrPrintDt] ,[mergeLossPersId] ,[mergeWinPersId],[persStatus]
   FROM [salesforce].[dbo].[RSTE_2233]]]></db:sql>
 		</db:select>
 		<batch:job jobName="UpsertContacts_BatchJob" doc:id="88aae173-5219-462c-8c8d-c4d08a5c3c9a" blockSize="200">
@@ -186,8 +189,9 @@ payload map
 	LastName: $.lastName,
 	FirstName: $.firstName,
 	EOS_ID__c: $.persId,
-	survivePersId__c: $.mergeWinPersId as String,
-	obsoletePersId__c: $.mergeLossPersId as String
+	persStatus__c: $.persStatus,
+	survivePersId__c: $.mergeWinPersId default null,
+	obsoletePersId__c: $.mergeLossPersId default null
 }]]></ee:set-payload>
 						</ee:message>
 					</ee:transform>
@@ -199,5 +203,4 @@ payload map
 			</batch:process-records>
 		</batch:job>
 	</flow>
-	<error-handler name="UWC2_ETL_POCError_Handler" doc:id="e591fd20-39d9-401a-835a-e75933e1b6be" />
 </mule>
